@@ -1,2 +1,22 @@
-﻿  menu.cpp
+﻿  JOSS.cpp
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(24,47): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(24,27): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(25,49): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(25,29): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
   JOSS.vcxproj -> C:\Users\thana\Desktop\game\JOSS\x64\Debug\JOSS.exe

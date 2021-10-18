@@ -2,29 +2,8 @@
 
 menu::menu(float width, float height)
 {
-	if (!font.loadFromFile("FreePixel.ttf"))
-	{
-	}
-
-	
-	/*Menu[0].setFont(font);
-	Menu[0].setFillColor(sf::Color::Red);
-	Menu[0].setString("Play");
-	Menu[0].setPosition(sf::Vector2f(width / 2, height / (MAX_NUMBER_OF_ITEMS + 1) * 1));
-
-	Menu[1].setFont(font);
-	Menu[1].setFillColor(sf::Color::White);
-	Menu[1].setString("Options");
-	Menu[1].setPosition(sf::Vector2f(width / 2, height / (MAX_NUMBER_OF_ITEMS + 1) * 2));
-
-	Menu[2].setFont(font);
-	Menu[2].setFillColor(sf::Color::White);
-	Menu[2].setString("Exit");
-	Menu[2].setPosition(sf::Vector2f(width / 2, height / (MAX_NUMBER_OF_ITEMS + 1) * 3));*/
 	Menu[1].setScale(1, 1);
 	button = 0;
-
-
 }
 menu::~menu()
 {
@@ -39,7 +18,7 @@ void menu::draw(sf::RenderWindow& window)
 	sprite.setTexture(texture);
 	sprite.setOrigin(0, 0);
 	window.draw(sprite);
-
+	
 	sf::Texture texture2;
 	texture2.loadFromFile("home/JOSS1.png");
 	sf::Sprite sprite2;
@@ -73,25 +52,22 @@ void menu::draw(sf::RenderWindow& window)
 	}
 
 }
-
 void menu::leftClick(int button)
 {
 	
 }
 void menu::mouseup(int button)
 {
-	if (button != 0)
+	if (button >= 0)
 	{
-		Menu[button - 1].setScale(1.1f, 1.1f);
-
+		Menu[button].setScale(1.1f, 1.1f);
 	}
 }
 void menu::mousedown(int button)
 {
-	if (button != 0)
+	if (button >= 0)
 	{
-		Menu[button - 1].setScale(1, 1);
-
+		Menu[button].setScale(1, 1);
 	}
 }
 

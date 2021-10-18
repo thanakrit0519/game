@@ -13,7 +13,7 @@ public:
 	void leftClick(int button);
 	void mouseup(int button);
 	void mousedown(int button);
-	int GetPressedItem() { return button; }
+	int GetPressedItem() { return button; };
 
 private:
 	int button;
