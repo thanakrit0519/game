@@ -51,18 +51,44 @@ void draw_username()
     US_name.setPosition(183, 254);
     window.draw(US_name);
 }
-
+void Show_score(int score)
+{
+    sf::Text Score;
+    sf::Font font;
+    string showscore = "SCORE : ";
+    int count = 0;
+    int check = score;
+    while (check>10)
+    {
+        check /= 10;
+        count++;
+    }
+    for (int i = count; i >= 0; i--)
+    {
+        showscore += ((score / pow(10, i))+'0');
+        int x = pow(10, i);
+        score %= x;
+    }
+    font.loadFromFile("FreePixel.ttf");
+    Score.setFont(font);
+    Score.setCharacterSize(50);
+    Score.setFillColor(sf::Color::White);
+    Score.setString(showscore);
+    Score.setPosition(100, 600);
+    window.draw(Score);
+    
+}
 int main()
 {
     Map map;
-
+    static long long score=0;
     float x = 18.0f;
     float y = 18.0f;
     float moveSpeed = 6.0f;
     float moveX = 0.0f;
     float moveY = moveSpeed;
     float deltaTime = 0.0f;
-    
+    vector<sf::Vector2f> Coin = map.Loadcoin();
     char moveChar='s';
     char nextmoveChar = 's';
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,50 +332,55 @@ int main()
                 x = x - moveX;
                 y = y - moveY;
             }
+            Coin = map.checkCoin(Coin, x, y);
+            score = map.UpdateScore();
+            Show_score(score);
+            cout << score << endl;
             if (moveChar == 's')
             {
-                playerDown1.setPosition(x, y);
+                playerDown1.setPosition(x, y-6);
                 animationDown1.Update(0, deltaTime);
                 playerDown1.setTextureRect(animationDown1.uvRect);
                 window.draw(playerDown1);
-                playerDown2.setPosition(x, y);
+                playerDown2.setPosition(x, y-6);
                 animationDown2.Update(0, deltaTime);
                 playerDown2.setTextureRect(animationDown2.uvRect);
                 window.draw(playerDown2);
             }
             else if (moveChar == 'a' )
             {
-                playerLeft1.setPosition(x, y);
+                playerLeft1.setPosition(x, y-6);
                 animationLeft1.Update(0, deltaTime);
                 playerLeft1.setTextureRect(animationLeft1.uvRect);
                 window.draw(playerLeft1);
-                playerLeft2.setPosition(x, y);
+                playerLeft2.setPosition(x, y-6);
                 animationLeft2.Update(0, deltaTime);
                 playerLeft2.setTextureRect(animationLeft2.uvRect);
                 window.draw(playerLeft2);
             }
             else if (moveChar == 'd' )
             {
-                playerRight1.setPosition(x, y);
+                playerRight1.setPosition(x, y-6);
                 animationRight1.Update(0, deltaTime);
                 playerRight1.setTextureRect(animationRight1.uvRect);
                 window.draw(playerRight1);
-                playerRight2.setPosition(x, y);
+                playerRight2.setPosition(x, y-6);
                 animationRight2.Update(0, deltaTime);
                 playerRight2.setTextureRect(animationRight2.uvRect);
                 window.draw(playerRight2);
             }
             else if (moveChar == 'w' )
             {
-                playerUp1.setPosition(x, y);
+                playerUp1.setPosition(x, y-6);
                 animationUp1.Update(0, deltaTime);
                 playerUp1.setTextureRect(animationUp1.uvRect);
                 window.draw(playerUp1);
-                playerUp2.setPosition(x, y);
+                playerUp2.setPosition(x, y-6);
                 animationUp2.Update(0, deltaTime);
                 playerUp2.setTextureRect(animationUp2.uvRect);
                 window.draw(playerUp2);
             }
+            map.generatecoin(window, Coin);
             map.generate(window);
             window.setView(view);
             window.display();
