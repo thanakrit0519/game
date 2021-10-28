@@ -10,7 +10,7 @@ using namespace std;
 
 vector<char> username;
 string user_name;
-int stage = 3;
+int stage = 1;
 float VIEW_SIZE = 720.0f;
 float aspectRatio;
 void ResizeView(const sf::RenderWindow& window, sf::View& view)
@@ -58,7 +58,7 @@ void Show_score(int score)
     string showscore = "SCORE : ";
     int count = 0;
     int check = score;
-    while (check>10)
+    while (check>=10)
     {
         check /= 10;
         count++;
@@ -76,21 +76,12 @@ void Show_score(int score)
     Score.setString(showscore);
     Score.setPosition(100, 600);
     window.draw(Score);
-    
 }
 int main()
 {
-    Map map;
-    static long long score=0;
-    float x = 18.0f;
-    float y = 18.0f;
-    float moveSpeed = 6.0f;
-    float moveX = 0.0f;
-    float moveY = moveSpeed;
     float deltaTime = 0.0f;
-    vector<sf::Vector2f> Coin = map.Loadcoin();
-    char moveChar='s';
-    char nextmoveChar = 's';
+    float deltaTimered = 0.0f;
+    bool PLAY = true;
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     float playersize = 36.0f;
     sf::RectangleShape playerDown1(sf::Vector2f(playersize, playersize));
@@ -101,8 +92,10 @@ int main()
     sf::RectangleShape playerRight2(sf::Vector2f(playersize, playersize));
     sf::RectangleShape playerUp1(sf::Vector2f(playersize, playersize));
     sf::RectangleShape playerUp2(sf::Vector2f(playersize, playersize));
-    
 
+    sf::RectangleShape RedUp1(sf::Vector2f(playersize, playersize));
+    sf::RectangleShape RedUp2(sf::Vector2f(playersize*1.2f, playersize*1.2f));
+    
     sf::Texture playerTextureDown1;
     playerTextureDown1.loadFromFile("slime/Down/1.png");
     playerDown1.setTexture(&playerTextureDown1);
@@ -143,6 +136,13 @@ int main()
     playerUp2.setFillColor(sf::Color(0, 255, 255));
     Animation animationUp2(&playerTextureUp2, sf::Vector2u(7, 1), 0.1f);
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Texture RedTextureUp2;
+    RedTextureUp2.loadFromFile("slime/UP/4.png");
+    RedUp2.setTexture(&RedTextureUp2);
+    RedUp2.setFillColor(sf::Color(255, 255, 0));
+    Animation animationRedUp2(&RedTextureUp2, sf::Vector2u(7, 1), 0.1f);
+
     sf::Clock clock;
     while (window.isOpen())
     {
@@ -251,140 +251,168 @@ int main()
         }
         if (stage == 3)
         {
-            deltaTime = clock.restart().asSeconds();
-            while (window.pollEvent(event))
+            Map map;
+            static long long score = 0;
+            float x = 18.0f;
+            float y = x = 18.0f;
+            float moveSpeed = 6.0f;
+            float moveX = 0.0f;
+            float moveY = moveSpeed;
+            vector<sf::Vector2f> Coin = map.Loadcoin();
+            char moveChar = 's';
+            char nextmoveChar = 's';
+
+            if (!PLAY)
             {
-                if (event.type == sf::Event::TextEntered)
+                PLAY = true;
+                Sleep(3000);
+            }
+            while (PLAY)
+            {
+                deltaTime = clock.restart().asSeconds();
+                deltaTimered = deltaTime;
+                while (window.pollEvent(event))
                 {
-                    if (event.text.unicode == 's')
+                    if (event.type == sf::Event::TextEntered)
                     {
-                        nextmoveChar = 's';
+                        if (event.text.unicode == 's')
+                        {
+                            nextmoveChar = 's';
+                        }
+                        else if (event.text.unicode == 'w')
+                        {
+                            nextmoveChar = 'w';
+                        }
+                        else if (event.text.unicode == 'a')
+                        {
+                            nextmoveChar = 'a';
+                        }
+                        else if (event.text.unicode == 'd')
+                        {
+                            nextmoveChar = 'd';
+                        }
                     }
-                    else if (event.text.unicode == 'w')
+                    else if (event.type == sf::Event::Closed)
                     {
-                        nextmoveChar = 'w';
+                        window.close();
+                        break;
                     }
-                    else if (event.text.unicode == 'a')
+                    else if (event.type == sf::Event::Resized)
                     {
-                        nextmoveChar = 'a';
+                        ResizeView(window, view);
                     }
-                    else if (event.text.unicode == 'd')
+                }
+                window.clear();
+                window.clear(sf::Color(50, 50, 50));
+                //cout << "Next: "<<nextmoveChar << endl;
+                if (nextmoveChar == 's')
+                {
+                    if (!(map.checkWall(x, y + 18)))
                     {
-                        nextmoveChar = 'd';
+                        moveY = moveSpeed;
+                        moveX = 0;
+                        moveChar = 's';
                     }
-                    
                 }
-                else if (event.type == sf::Event::Closed)
+                else if (nextmoveChar == 'w')
                 {
-                    window.close();
-                    break;
+                    if (!(map.checkWall(x, y - 18)))
+                    {
+                        moveY = -moveSpeed;
+                        moveX = 0;
+                        moveChar = 'w';
+                    }
                 }
-                else if (event.type == sf::Event::Resized)
+                else if (nextmoveChar == 'a')
                 {
-                    ResizeView(window, view);
+                    if (!(map.checkWall(x - 18, y)))
+                    {
+                        moveX = -moveSpeed;
+                        moveY = 0;
+                        moveChar = 'a';
+                    }
                 }
-            }
-            window.clear();
-            window.clear(sf::Color(50, 50, 50));
-            //cout << "Next: "<<nextmoveChar << endl;
-           
-            if (nextmoveChar == 's')
-            {
-                if (!(map.checkWall(x, y + 18)))
+                else if (nextmoveChar == 'd')
                 {
-                    moveY = moveSpeed;
-                    moveX = 0;
-                    moveChar = 's';
+                    if (!(map.checkWall(x + 18, y)))
+                    {
+                        moveX = moveSpeed;
+                        moveY = 0;
+                        moveChar = 'd';
+                    }
                 }
-            }
-            else if (nextmoveChar == 'w')
-            {
-                if (!(map.checkWall(x, y - 18)))
+                //cout << "move: " << moveChar << endl;
+                x = x + moveX;
+                y = y + moveY;
+                if (map.checkWall(x, y))
                 {
-                    moveY = -moveSpeed;
-                    moveX = 0;
-                    moveChar = 'w';
+                    x = x - moveX;
+                    y = y - moveY;
                 }
-            }
-            else if (nextmoveChar == 'a')
-            {
-                if (!(map.checkWall(x-18, y)))
+                Coin = map.checkCoin(Coin, x, y);
+                if (Coin.empty())
                 {
-                    moveX = -moveSpeed;
-                    moveY = 0;
-                    moveChar = 'a';
+                    PLAY = false;
                 }
-            }
-            else if (nextmoveChar == 'd')
-            {
-                if (!(map.checkWall(x+ 18, y)))
+                score = map.UpdateScore();
+                Show_score(score);
+                cout << score << endl;
+                if (moveChar == 's')
                 {
-                    moveX = moveSpeed;
-                    moveY = 0;
-                    moveChar = 'd';
+                    playerDown1.setPosition(x, y - 6);
+                    animationDown1.Update(0, deltaTime);
+                    playerDown1.setTextureRect(animationDown1.uvRect);
+                    window.draw(playerDown1);
+                    playerDown2.setPosition(x, y - 6);
+                    animationDown2.Update(0, deltaTime);
+                    playerDown2.setTextureRect(animationDown2.uvRect);
+                    window.draw(playerDown2);
                 }
+                else if (moveChar == 'a')
+                {
+                    playerLeft1.setPosition(x, y - 6);
+                    animationLeft1.Update(0, deltaTime);
+                    playerLeft1.setTextureRect(animationLeft1.uvRect);
+                    window.draw(playerLeft1);
+                    playerLeft2.setPosition(x, y - 6);
+                    animationLeft2.Update(0, deltaTime);
+                    playerLeft2.setTextureRect(animationLeft2.uvRect);
+                    window.draw(playerLeft2);
+                }
+                else if (moveChar == 'd')
+                {
+                    playerRight1.setPosition(x, y - 6);
+                    animationRight1.Update(0, deltaTime);
+                    playerRight1.setTextureRect(animationRight1.uvRect);
+                    window.draw(playerRight1);
+                    playerRight2.setPosition(x, y - 6);
+                    animationRight2.Update(0, deltaTime);
+                    playerRight2.setTextureRect(animationRight2.uvRect);
+                    window.draw(playerRight2);
+                }
+                else if (moveChar == 'w')
+                {
+                    playerUp1.setPosition(x, y - 6);
+                    animationUp1.Update(0, deltaTime);
+                    playerUp1.setTextureRect(animationUp1.uvRect);
+                    window.draw(playerUp1);
+                    playerUp2.setPosition(x, y - 6);
+                    animationUp2.Update(0, deltaTime);
+                    playerUp2.setTextureRect(animationUp2.uvRect);
+                    window.draw(playerUp2);
+                }
+
+                RedUp2.setPosition(18.0f*14-3, 18.0f*11-9);
+                animationRedUp2.Update(0, deltaTimered);
+                RedUp2.setTextureRect(animationRedUp2.uvRect);
+                window.draw(RedUp2);
+
+                map.generatecoin(window, Coin);
+                map.generate(window);
+                window.setView(view);
+                window.display();
+                Sleep(50);
             }
-            //cout << "move: " << moveChar << endl;
-            x = x + moveX;
-            y = y + moveY;
-            if (map.checkWall(x, y))
-            {
-                x = x - moveX;
-                y = y - moveY;
-            }
-            Coin = map.checkCoin(Coin, x, y);
-            score = map.UpdateScore();
-            Show_score(score);
-            cout << score << endl;
-            if (moveChar == 's')
-            {
-                playerDown1.setPosition(x, y-6);
-                animationDown1.Update(0, deltaTime);
-                playerDown1.setTextureRect(animationDown1.uvRect);
-                window.draw(playerDown1);
-                playerDown2.setPosition(x, y-6);
-                animationDown2.Update(0, deltaTime);
-                playerDown2.setTextureRect(animationDown2.uvRect);
-                window.draw(playerDown2);
-            }
-            else if (moveChar == 'a' )
-            {
-                playerLeft1.setPosition(x, y-6);
-                animationLeft1.Update(0, deltaTime);
-                playerLeft1.setTextureRect(animationLeft1.uvRect);
-                window.draw(playerLeft1);
-                playerLeft2.setPosition(x, y-6);
-                animationLeft2.Update(0, deltaTime);
-                playerLeft2.setTextureRect(animationLeft2.uvRect);
-                window.draw(playerLeft2);
-            }
-            else if (moveChar == 'd' )
-            {
-                playerRight1.setPosition(x, y-6);
-                animationRight1.Update(0, deltaTime);
-                playerRight1.setTextureRect(animationRight1.uvRect);
-                window.draw(playerRight1);
-                playerRight2.setPosition(x, y-6);
-                animationRight2.Update(0, deltaTime);
-                playerRight2.setTextureRect(animationRight2.uvRect);
-                window.draw(playerRight2);
-            }
-            else if (moveChar == 'w' )
-            {
-                playerUp1.setPosition(x, y-6);
-                animationUp1.Update(0, deltaTime);
-                playerUp1.setTextureRect(animationUp1.uvRect);
-                window.draw(playerUp1);
-                playerUp2.setPosition(x, y-6);
-                animationUp2.Update(0, deltaTime);
-                playerUp2.setTextureRect(animationUp2.uvRect);
-                window.draw(playerUp2);
-            }
-            map.generatecoin(window, Coin);
-            map.generate(window);
-            window.setView(view);
-            window.display();
-            Sleep(50);
         }
     }
     return 0;

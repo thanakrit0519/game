@@ -146,6 +146,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="EnemyRed.cpp" />
     <ClCompile Include="JOSS.cpp" />
     <ClCompile Include="login.cpp" />
     <ClCompile Include="map.cpp" />
@@ -153,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="EnemyRed.h" />
     <ClInclude Include="login.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="menu.h" />

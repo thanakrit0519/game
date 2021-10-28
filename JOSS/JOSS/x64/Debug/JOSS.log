@@ -25,5 +25,5 @@ C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(68,43): warning C4244: 'argument'
               _Elem=char
           ]
 C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(69,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(337,24): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(358,28): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
   JOSS.vcxproj -> C:\Users\thana\Desktop\game\JOSS\x64\Debug\JOSS.exe
