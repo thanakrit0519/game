@@ -10,7 +10,7 @@ using namespace std;
 
 vector<char> username;
 string user_name;
-int stage = 1;
+int stage = 3;
 float VIEW_SIZE = 720.0f;
 float aspectRatio;
 void ResizeView(const sf::RenderWindow& window, sf::View& view)
@@ -84,6 +84,7 @@ int main()
     bool PLAY = true;
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     float playersize = 36.0f;
+    float Enemysize = playersize * 1.2f;
     sf::RectangleShape playerDown1(sf::Vector2f(playersize, playersize));
     sf::RectangleShape playerDown2(sf::Vector2f(playersize, playersize));
     sf::RectangleShape playerLeft1(sf::Vector2f(playersize, playersize));
@@ -93,8 +94,10 @@ int main()
     sf::RectangleShape playerUp1(sf::Vector2f(playersize, playersize));
     sf::RectangleShape playerUp2(sf::Vector2f(playersize, playersize));
 
-    sf::RectangleShape RedUp1(sf::Vector2f(playersize, playersize));
-    sf::RectangleShape RedUp2(sf::Vector2f(playersize*1.2f, playersize*1.2f));
+    sf::RectangleShape RedDown(sf::Vector2f(Enemysize, Enemysize));
+    sf::RectangleShape RedLeft(sf::Vector2f(Enemysize, Enemysize));
+    sf::RectangleShape RedRight(sf::Vector2f(Enemysize, Enemysize));
+    sf::RectangleShape RedUp(sf::Vector2f(Enemysize, Enemysize));
     
     sf::Texture playerTextureDown1;
     playerTextureDown1.loadFromFile("slime/Down/1.png");
@@ -136,12 +139,29 @@ int main()
     playerUp2.setFillColor(sf::Color(0, 255, 255));
     Animation animationUp2(&playerTextureUp2, sf::Vector2u(7, 1), 0.1f);
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    sf::Texture RedTextureDown;
+    RedTextureDown.loadFromFile("slime/Down/2.png");
+    RedDown.setTexture(&RedTextureDown);
+    RedDown.setFillColor(sf::Color(255, 35, 45));
+    Animation animationRedDown(&RedTextureDown, sf::Vector2u(4, 1), 0.2f);
 
-    sf::Texture RedTextureUp2;
-    RedTextureUp2.loadFromFile("slime/UP/4.png");
-    RedUp2.setTexture(&RedTextureUp2);
-    RedUp2.setFillColor(sf::Color(255, 255, 0));
-    Animation animationRedUp2(&RedTextureUp2, sf::Vector2u(7, 1), 0.1f);
+    sf::Texture RedTextureLeft;
+    RedTextureLeft.loadFromFile("slime/Left/2.png");
+    RedLeft.setTexture(&RedTextureLeft);
+    RedLeft.setFillColor(sf::Color(255, 35, 45));
+    Animation animationRedLeft(&RedTextureLeft, sf::Vector2u(2, 1), 0.2f);
+
+    sf::Texture RedTextureRight;
+    RedTextureRight.loadFromFile("slime/Right/2.png");
+    RedRight.setTexture(&RedTextureRight);
+    RedRight.setFillColor(sf::Color(255, 35, 45));
+    Animation animationRedRight(&RedTextureRight, sf::Vector2u(2, 1), 0.2f);
+
+    sf::Texture RedTextureUp;
+    RedTextureUp.loadFromFile("slime/UP/4.png");
+    RedUp.setTexture(&RedTextureUp);
+    RedUp.setFillColor(sf::Color(255, 35, 45));
+    Animation animationRedUp(&RedTextureUp, sf::Vector2u(7, 1), 0.1f);
 
     sf::Clock clock;
     while (window.isOpen())
@@ -254,14 +274,20 @@ int main()
             Map map;
             static long long score = 0;
             float x = 18.0f;
-            float y = x = 18.0f;
+            float y = 18.0f;
             float moveSpeed = 6.0f;
+            float EnemymoveSpeed = 4.5f;
+            bool Red_change_direction = true;
             float moveX = 0.0f;
             float moveY = moveSpeed;
             vector<sf::Vector2f> Coin = map.Loadcoin();
             char moveChar = 's';
             char nextmoveChar = 's';
-
+            float RedposX = 18.0f * 14 ;
+            float RedposY = (18.0f * 11) ;
+            char Redwalk = 'w';
+            float distanceRedX, distanceRedY;
+            int totalWay = 0;
             if (!PLAY)
             {
                 PLAY = true;
@@ -356,7 +382,7 @@ int main()
                 }
                 score = map.UpdateScore();
                 Show_score(score);
-                cout << score << endl;
+                //cout << score << endl;
                 if (moveChar == 's')
                 {
                     playerDown1.setPosition(x, y - 6);
@@ -401,13 +427,76 @@ int main()
                     playerUp2.setTextureRect(animationUp2.uvRect);
                     window.draw(playerUp2);
                 }
-
-                RedUp2.setPosition(18.0f*14-3, 18.0f*11-9);
-                animationRedUp2.Update(0, deltaTimered);
-                RedUp2.setTextureRect(animationRedUp2.uvRect);
-                window.draw(RedUp2);
-
-                map.generatecoin(window, Coin);
+                
+                    distanceRedX = x - RedposX;
+                    distanceRedY = y - RedposY;
+                    if (Redwalk == 'a' || Redwalk == 'd')
+                    {
+                        if (distanceRedY >= 0)
+                        {
+                            if (!map.checkWall(RedposX, RedposY + 18)) Redwalk = 's';
+                            else if (!map.checkWall(RedposX, RedposY - 18)) Redwalk = 'w';
+                            else if(map.checkWall(RedposX , RedposY)) Redwalk = 'a';
+                        }
+                        else if (distanceRedY < 0)
+                        {
+                            if(!map.checkWall(RedposX, RedposY - 18)) Redwalk = 'w';
+                            else if (!map.checkWall(RedposX, RedposY + 18)) Redwalk = 's';
+                            else if (map.checkWall(RedposX , RedposY)) Redwalk = 'd';
+                        }
+                    }
+                    else if (Redwalk == 'w' || Redwalk == 's')
+                    {
+                        if (distanceRedX >= 0)
+                        {
+                            if(!map.checkWall(RedposX + 18, RedposY)) Redwalk = 'd';
+                            else if (!map.checkWall(RedposX - 18, RedposY)) Redwalk = 'a';
+                        }
+                        else if (distanceRedX < 0)
+                        {
+                            if (!map.checkWall(RedposX - 18, RedposY)) Redwalk = 'a';
+                            else if (!map.checkWall(RedposX + 18, RedposY)) Redwalk = 'd';
+                        }
+                    }
+                    //cout << Redwalk << endl;
+                    map.generatecoin(window, Coin);
+                if (Redwalk == 'a')
+                {
+                    RedposX -= EnemymoveSpeed;
+                    RedLeft.setPosition(RedposX-3, RedposY - 9);
+                    animationRedLeft.Update(0, deltaTimered);
+                    RedLeft.setTextureRect(animationRedLeft.uvRect);
+                    window.draw(RedLeft);
+                }
+                else if (Redwalk == 'd')
+                {
+                    RedposX += EnemymoveSpeed;
+                    RedRight.setPosition(RedposX-3, RedposY - 9);
+                    animationRedRight.Update(0, deltaTimered);
+                    RedRight.setTextureRect(animationRedRight.uvRect);
+                    window.draw(RedRight);
+                }
+                else if (Redwalk == 'w')
+                {
+                    RedposY -= EnemymoveSpeed;
+                    RedUp.setPosition(RedposX-3, RedposY - 9);
+                    animationRedUp.Update(0, deltaTimered);
+                    RedUp.setTextureRect(animationRedUp.uvRect);
+                    window.draw(RedUp);
+                }
+                else if (Redwalk == 's')
+                {
+                    RedposY += EnemymoveSpeed;
+                    RedDown.setPosition(RedposX-3, RedposY - 9);
+                    animationRedDown.Update(0, deltaTimered);
+                    RedDown.setTextureRect(animationRedDown.uvRect);
+                    window.draw(RedDown);
+                }
+                /*if (RedUp2.getGlobalBounds() == playerUp2.getGlobalBounds())
+                {
+                    cout << "1" << endl;
+                }*/
+                
                 map.generate(window);
                 window.setView(view);
                 window.display();

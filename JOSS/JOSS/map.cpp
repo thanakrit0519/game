@@ -39,7 +39,7 @@ bool Map::checkWall(float x, float y)
 {
     for (int i = 0; i < tilemap.size(); i++)
     {
-        if ((tilemap[i].x < x + 36) && (tilemap[i].x + 18> x) && (tilemap[i].y < y + 36) && (tilemap[i].y +18> y))
+        if ((tilemap[i].x < x + 36.0) && (tilemap[i].x + 18.0> x) && (tilemap[i].y < y + 36.0) && (tilemap[i].y +18.0> y))
         {
             return true;
         }
