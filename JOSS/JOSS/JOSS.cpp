@@ -490,13 +490,12 @@ int main()
                     RedDown.setPosition(RedposX-3, RedposY - 9);
                     animationRedDown.Update(0, deltaTimered);
                     RedDown.setTextureRect(animationRedDown.uvRect);
-                    window.draw(RedDown);
-                }
-                /*if (RedUp2.getGlobalBounds() == playerUp2.getGlobalBounds())
+                    window.draw(RedDown);//                                                                                                 P                                            E
+                }// |                   P E                    |                         E P                        |                       E                    |                       P                  |
+                if ((((x + 39.0 >= RedposX) && (x <= RedposX)) || ((RedposX + 36.0 >= x) && (RedposX - 3.0 <= x))) && (((y + 23.0 >= RedposY) && (y <= RedposY)) || ((RedposY + 24.0 >= y) && (RedposY <= y))))
                 {
-                    cout << "1" << endl;
-                }*/
-                
+                    PLAY = false;
+                }
                 map.generate(window);
                 window.setView(view);
                 window.display();
