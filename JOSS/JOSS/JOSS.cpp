@@ -98,6 +98,11 @@ int main()
     sf::RectangleShape RedLeft(sf::Vector2f(Enemysize, Enemysize));
     sf::RectangleShape RedRight(sf::Vector2f(Enemysize, Enemysize));
     sf::RectangleShape RedUp(sf::Vector2f(Enemysize, Enemysize));
+
+    sf::RectangleShape GreenDown(sf::Vector2f(Enemysize, Enemysize));
+    sf::RectangleShape GreenLeft(sf::Vector2f(Enemysize, Enemysize));
+    sf::RectangleShape GreenRight(sf::Vector2f(Enemysize, Enemysize));
+    sf::RectangleShape GreenUp(sf::Vector2f(Enemysize, Enemysize));
     
     sf::Texture playerTextureDown1;
     playerTextureDown1.loadFromFile("slime/Down/1.png");
@@ -162,6 +167,30 @@ int main()
     RedUp.setTexture(&RedTextureUp);
     RedUp.setFillColor(sf::Color(255, 35, 45));
     Animation animationRedUp(&RedTextureUp, sf::Vector2u(7, 1), 0.1f);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    sf::Texture GreenTextureDown;
+    GreenTextureDown.loadFromFile("slime/Down/2.png");
+    GreenDown.setTexture(&GreenTextureDown);
+    GreenDown.setFillColor(sf::Color(50, 255, 50));
+    Animation animationGreenDown(&GreenTextureDown, sf::Vector2u(4, 1), 0.2f);
+
+    sf::Texture GreenTextureLeft;
+    GreenTextureLeft.loadFromFile("slime/Left/2.png");
+    GreenLeft.setTexture(&GreenTextureLeft);
+    GreenLeft.setFillColor(sf::Color(50, 255, 50));
+    Animation animationGreenLeft(&GreenTextureLeft, sf::Vector2u(2, 1), 0.2f);
+
+    sf::Texture GreenTextureRight;
+    GreenTextureRight.loadFromFile("slime/Right/2.png");
+    GreenRight.setTexture(&GreenTextureRight);
+    GreenRight.setFillColor(sf::Color(50, 255, 50));
+    Animation animationGreenRight(&GreenTextureRight, sf::Vector2u(2, 1), 0.2f);
+
+    sf::Texture GreenTextureUp;
+    GreenTextureUp.loadFromFile("slime/UP/4.png");
+    GreenUp.setTexture(&GreenTextureUp);
+    GreenUp.setFillColor(sf::Color(50, 255, 50));
+    Animation animationGreenUp(&GreenTextureUp, sf::Vector2u(7, 1), 0.1f);
 
     sf::Clock clock;
     while (window.isOpen())
@@ -277,16 +306,20 @@ int main()
             float y = 18.0f;
             float moveSpeed = 6.0f;
             float EnemymoveSpeed = 4.5f;
-            bool Red_change_direction = true;
             float moveX = 0.0f;
             float moveY = moveSpeed;
             vector<sf::Vector2f> Coin = map.Loadcoin();
             char moveChar = 's';
             char nextmoveChar = 's';
+
             float RedposX = 18.0f * 14 ;
             float RedposY = (18.0f * 11) ;
             char Redwalk = 'w';
-            float distanceRedX, distanceRedY;
+            float GreenposX = 18.0f * 16;
+            float GreenposY = (18.0f * 11);
+            char Greenwalk = 'w';
+
+            float distanceEnemyX, distanceEnemyY;
             int totalWay = 0;
             if (!PLAY)
             {
@@ -427,39 +460,46 @@ int main()
                     playerUp2.setTextureRect(animationUp2.uvRect);
                     window.draw(playerUp2);
                 }
-                
-                    distanceRedX = x - RedposX;
-                    distanceRedY = y - RedposY;
-                    if (Redwalk == 'a' || Redwalk == 'd')
-                    {
-                        if (distanceRedY >= 0)
-                        {
+                distanceEnemyX = x - RedposX;
+                distanceEnemyY = y - RedposY;
+                if (Redwalk == 'a' || Redwalk == 'd')
+                {
+                   if (distanceEnemyY >= 0)
+                   {
                             if (!map.checkWall(RedposX, RedposY + 18)) Redwalk = 's';
                             else if (!map.checkWall(RedposX, RedposY - 18)) Redwalk = 'w';
                             else if(map.checkWall(RedposX , RedposY)) Redwalk = 'a';
-                        }
-                        else if (distanceRedY < 0)
-                        {
+                   }
+                   else if (distanceEnemyY < 0)
+                   {
                             if(!map.checkWall(RedposX, RedposY - 18)) Redwalk = 'w';
                             else if (!map.checkWall(RedposX, RedposY + 18)) Redwalk = 's';
                             else if (map.checkWall(RedposX , RedposY)) Redwalk = 'd';
-                        }
-                    }
+                   }
+                }
                     else if (Redwalk == 'w' || Redwalk == 's')
                     {
-                        if (distanceRedX >= 0)
+                        if (distanceEnemyX >= 0)
                         {
                             if(!map.checkWall(RedposX + 18, RedposY)) Redwalk = 'd';
                             else if (!map.checkWall(RedposX - 18, RedposY)) Redwalk = 'a';
                         }
-                        else if (distanceRedX < 0)
+                        else if (distanceEnemyX < 0)
                         {
                             if (!map.checkWall(RedposX - 18, RedposY)) Redwalk = 'a';
                             else if (!map.checkWall(RedposX + 18, RedposY)) Redwalk = 'd';
                         }
                     }
+                distanceEnemyX = x - GreenposX;
+                distanceEnemyY = y - GreenposY;
+
                     //cout << Redwalk << endl;
                     map.generatecoin(window, Coin);
+
+                    GreenDown.setPosition(GreenposX - 3, GreenposY - 9);
+                    animationGreenDown.Update(0, deltaTimered);
+                    GreenDown.setTextureRect(animationGreenDown.uvRect);
+                    window.draw(GreenDown);
                 if (Redwalk == 'a')
                 {
                     RedposX -= EnemymoveSpeed;
@@ -490,8 +530,10 @@ int main()
                     RedDown.setPosition(RedposX-3, RedposY - 9);
                     animationRedDown.Update(0, deltaTimered);
                     RedDown.setTextureRect(animationRedDown.uvRect);
-                    window.draw(RedDown);//                                                                                                 P                                            E
-                }// |                   P E                    |                         E P                        |                       E                    |                       P                  |
+                    window.draw(RedDown);
+                }
+                //                                                                                                                         P                                            E
+                // |                   P E                    |                         E P                        |                       E                    |                       P                  |
                 if ((((x + 39.0 >= RedposX) && (x <= RedposX)) || ((RedposX + 36.0 >= x) && (RedposX - 3.0 <= x))) && (((y + 23.0 >= RedposY) && (y <= RedposY)) || ((RedposY + 24.0 >= y) && (RedposY <= y))))
                 {
                     PLAY = false;
