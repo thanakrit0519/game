@@ -19,11 +19,69 @@ C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(25,29): warning C4244: 'argument'
           [
               T=unsigned int
           ]
-C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(68,43): warning C4244: 'argument': conversion from 'double' to '_Elem', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(73,43): warning C4244: 'argument': conversion from 'double' to '_Elem', possible loss of data
           with
           [
               _Elem=char
           ]
-C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(69,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(417,28): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(74,15): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(123,75): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(123,57): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(124,77): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(124,59): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(125,76): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(125,58): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(144,72): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(144,54): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(472,37): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(558,39): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(734,53): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(753,54): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(771,69): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(772,74): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(773,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(778,69): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(779,74): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(780,62): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(881,53): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(900,53): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(918,67): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(919,72): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(920,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(925,67): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(926,72): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(927,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\thana\Desktop\game\JOSS\JOSS\JOSS.cpp(1222,27): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
   JOSS.vcxproj -> C:\Users\thana\Desktop\game\JOSS\x64\Debug\JOSS.exe

@@ -51,11 +51,16 @@ void draw_username()
     US_name.setPosition(183, 254);
     window.draw(US_name);
 }
-void Show_score(int score)
+void Show_Text(int score,float cd)
 {
     sf::Text Score;
+    sf::Text CD;
+    sf::Text Life;
     sf::Font font;
     string showscore = "SCORE : ";
+    string showcd;
+    string showlife = "Life : ";
+    showcd += int(cd) + '0';
     int count = 0;
     int check = score;
     while (check>=10)
@@ -71,11 +76,27 @@ void Show_score(int score)
     }
     font.loadFromFile("FreePixel.ttf");
     Score.setFont(font);
-    Score.setCharacterSize(50);
+    Score.setCharacterSize(35);
     Score.setFillColor(sf::Color::White);
     Score.setString(showscore);
-    Score.setPosition(100, 600);
+    Score.setPosition(50, 660);
     window.draw(Score);
+    Life.setFont(font);
+    Life.setCharacterSize(35);
+    Life.setFillColor(sf::Color::White);
+    Life.setString(showlife);
+    Life.setPosition(50, 600);
+    window.draw(Life);
+    if (cd>0)
+    {
+        CD.setFont(font);
+        CD.setCharacterSize(50);
+        CD.setFillColor(sf::Color::Black);
+        CD.setString(showcd);
+        CD.setPosition(600, 620);
+        window.draw(CD);
+    }
+    
 }
 int main()
 {
@@ -99,11 +120,72 @@ int main()
     sf::RectangleShape RedRight(sf::Vector2f(Enemysize, Enemysize));
     sf::RectangleShape RedUp(sf::Vector2f(Enemysize, Enemysize));
 
+    sf::RectangleShape DeathRed(sf::Vector2f(playersize * 1.5, playersize * 1.5));
+    sf::RectangleShape DeathGreen(sf::Vector2f(playersize * 1.5, playersize * 1.5));
+    sf::RectangleShape DeathPink(sf::Vector2f(playersize * 1.5, playersize * 1.5));
+
     sf::RectangleShape GreenDown(sf::Vector2f(Enemysize, Enemysize));
     sf::RectangleShape GreenLeft(sf::Vector2f(Enemysize, Enemysize));
     sf::RectangleShape GreenRight(sf::Vector2f(Enemysize, Enemysize));
     sf::RectangleShape GreenUp(sf::Vector2f(Enemysize, Enemysize));
+
+    sf::RectangleShape Dash_Effect_A(sf::Vector2f(playersize * 2, playersize * 2));
+    sf::RectangleShape Dash_Effect_S(sf::Vector2f(playersize * 2, playersize * 2));
+    sf::RectangleShape Dash_Effect_W(sf::Vector2f(playersize * 2, playersize * 2));
+    sf::RectangleShape Dash_Effect_D(sf::Vector2f(playersize * 2, playersize * 2));
+
+    sf::RectangleShape PinkDown(sf::Vector2f(Enemysize, Enemysize));
+    sf::RectangleShape PinkLeft(sf::Vector2f(Enemysize, Enemysize));
+    sf::RectangleShape PinkRight(sf::Vector2f(Enemysize, Enemysize));
+    sf::RectangleShape PinkUp(sf::Vector2f(Enemysize, Enemysize));
+
+    sf::RectangleShape playerLife1(sf::Vector2f(playersize, playersize));
+    sf::RectangleShape playerLife2(sf::Vector2f(playersize, playersize));
+    sf::RectangleShape Skill(sf::Vector2f(playersize * 2.5, playersize * 2.5));
+    sf::CircleShape BgSkill(50);
+    sf::CircleShape BgSkill2(44);
+    BgSkill.setFillColor(sf::Color(0, 0, 0));
+    sf::Texture playerTextureLife1;
+    playerTextureLife1.loadFromFile("slime/icon/1.png");
+    playerLife1.setTexture(&playerTextureLife1);
+    playerLife2.setTexture(&playerTextureLife1);
+    sf::Texture playerTextureSkill;
+    playerTextureSkill.loadFromFile("slime/icon/2.png");
+    Skill.setTexture(&playerTextureSkill);
     
+    
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    sf::Texture Death_Texture;
+    Death_Texture.loadFromFile("slime/Effect/boom.png");
+    DeathRed.setTexture(&Death_Texture);
+    Animation animationDeathRed(&Death_Texture, sf::Vector2u(5, 2), 0.1f);
+    DeathGreen.setTexture(&Death_Texture);
+    Animation animationDeathGreen(&Death_Texture, sf::Vector2u(5, 2), 0.1f);
+    DeathPink.setTexture(&Death_Texture);
+    Animation animationDeathPink(&Death_Texture, sf::Vector2u(5, 2), 0.1f);
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    sf::Texture Dash_Texture_A;
+    Dash_Texture_A.loadFromFile("slime/Effect/Fire_ball_A.png");
+    Dash_Effect_A.setTexture(&Dash_Texture_A);
+    Animation animationDash_A(&Dash_Texture_A, sf::Vector2u(6, 1), 0.1f);
+
+    sf::Texture Dash_Texture_S;
+    Dash_Texture_S.loadFromFile("slime/Effect/Fire_ball_S.png");
+    Dash_Effect_S.setTexture(&Dash_Texture_S);
+    Animation animationDash_S(&Dash_Texture_S, sf::Vector2u(1, 6), 0.1f);
+
+    sf::Texture Dash_Texture_W;
+    Dash_Texture_W.loadFromFile("slime/Effect/Fire_ball_W.png");
+    Dash_Effect_W.setTexture(&Dash_Texture_W);
+    Animation animationDash_W(&Dash_Texture_W, sf::Vector2u(1, 6), 0.1f);
+
+    sf::Texture Dash_Texture_D;
+    Dash_Texture_D.loadFromFile("slime/Effect/Fire_ball_D.png");
+    Dash_Effect_D.setTexture(&Dash_Texture_D);
+    Animation animationDash_D(&Dash_Texture_D, sf::Vector2u(6, 1), 0.1f);
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     sf::Texture playerTextureDown1;
     playerTextureDown1.loadFromFile("slime/Down/1.png");
     playerDown1.setTexture(&playerTextureDown1);
@@ -191,7 +273,36 @@ int main()
     GreenUp.setTexture(&GreenTextureUp);
     GreenUp.setFillColor(sf::Color(50, 255, 50));
     Animation animationGreenUp(&GreenTextureUp, sf::Vector2u(7, 1), 0.1f);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    sf::Texture PinkTextureDown;
+    PinkTextureDown.loadFromFile("slime/Down/2.png");
+    PinkDown.setTexture(&PinkTextureDown);
+    PinkDown.setFillColor(sf::Color(255, 20, 147));
+    Animation animationPinkDown(&PinkTextureDown, sf::Vector2u(4, 1), 0.2f);
 
+    sf::Texture PinkTextureLeft;
+    PinkTextureLeft.loadFromFile("slime/Left/2.png");
+    PinkLeft.setTexture(&PinkTextureLeft);
+    PinkLeft.setFillColor(sf::Color(255, 20, 147));
+    Animation animationPinkLeft(&PinkTextureLeft, sf::Vector2u(2, 1), 0.2f);
+
+    sf::Texture PinkTextureRight;
+    PinkTextureRight.loadFromFile("slime/Right/2.png");
+    PinkRight.setTexture(&PinkTextureRight);
+    PinkRight.setFillColor(sf::Color(255, 20, 147));
+    Animation animationPinkRight(&PinkTextureRight, sf::Vector2u(2, 1), 0.2f);
+
+    sf::Texture PinkTextureUp;
+    PinkTextureUp.loadFromFile("slime/UP/4.png");
+    PinkUp.setTexture(&PinkTextureUp);
+    PinkUp.setFillColor(sf::Color(255, 20, 147));
+    Animation animationPinkUp(&PinkTextureUp, sf::Vector2u(7, 1), 0.1f);
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    int Hp = 2;
+    static long long score = 0;
+    Map map;
+    vector<sf::Vector2f> Coin = map.Loadcoin();
     sf::Clock clock;
     while (window.isOpen())
     {
@@ -299,37 +410,66 @@ int main()
                 window.display();
         }
         if (stage == 3)
-        {
-            Map map;
-            static long long score = 0;
+        {   
             float x = 18.0f;
             float y = 18.0f;
-            float moveSpeed = 6.0f;
+            float moveSpeed = 4.5f;
             float EnemymoveSpeed = 4.5f;
             float moveX = 0.0f;
             float moveY = moveSpeed;
-            vector<sf::Vector2f> Coin = map.Loadcoin();
             char moveChar = 's';
             char nextmoveChar = 's';
+            
+
+            bool Dash = false;
+            int Dash_Count = 0;
+            float Dash_cd = 0;
 
             float RedposX = 18.0f * 14 ;
             float RedposY = (18.0f * 11) ;
             char Redwalk = 'w';
+            bool RedDeath = false;
+            bool RedDeathAnimation = false;
+            float RedDeathposX;
+            float RedDeathposY;
+            float RedDeathTime=0;
+
             float GreenposX = 18.0f * 16;
             float GreenposY = (18.0f * 11);
-            char Greenwalk = 'w';
+            char Greenwalk = 'a';
+            bool GreenDeath = false;
+            bool GreenDeathAnimation = false;
+            float GreenDeathposX;
+            float GreenDeathposY;
+            float GreenDeathTime = 0;
 
+            float PinkposX = 18.0f * 20;
+            float PinkposY = (18.0f * 11);
+            char Pinkwalk = 'a';
+            bool PinkDeath = false;
+            bool PinkDeathAnimation = false;
+            float PinkDeathposX;
+            float PinkDeathposY;
+            float PinkDeathTime = 0;
+            
             float distanceEnemyX, distanceEnemyY;
-            int totalWay = 0;
-            if (!PLAY)
+            float Red_Death_cd=0;
+            float Green_Death_cd = 0;
+            float Pink_Death_cd = 0;
+
+            
+            if (!PLAY && Hp > 0)
             {
                 PLAY = true;
-                Sleep(3000);
+                Hp--;
+                Sleep(2000);
             }
+            else if(Hp==0)stage = 1;
             while (PLAY)
             {
                 deltaTime = clock.restart().asSeconds();
                 deltaTimered = deltaTime;
+                float waitTime = 0.1;
                 while (window.pollEvent(event))
                 {
                     if (event.type == sf::Event::TextEntered)
@@ -350,6 +490,10 @@ int main()
                         {
                             nextmoveChar = 'd';
                         }
+                        else if (event.text.unicode == ' ' && Dash_cd <= 0)
+                        {
+                            Dash = true;
+                        }
                     }
                     else if (event.type == sf::Event::Closed)
                     {
@@ -361,7 +505,6 @@ int main()
                         ResizeView(window, view);
                     }
                 }
-                window.clear();
                 window.clear(sf::Color(50, 50, 50));
                 //cout << "Next: "<<nextmoveChar << endl;
                 if (nextmoveChar == 's')
@@ -401,6 +544,34 @@ int main()
                     }
                 }
                 //cout << "move: " << moveChar << endl;
+                if (Dash && int(x * 10) % 180 == 0 && int(y * 10) % 180 == 0)
+                {
+                    if (moveX > 0)moveX = 18.0;
+                    else if(moveX < 0)moveX = -18.0;
+                    else if (moveY > 0)moveY = 18.0;
+                    else if (moveY < 0)moveY = -18.0;
+                    Dash_Count++;
+                    if (Dash_Count == 8)
+                    {
+                        Dash = false; 
+                        Dash_Count = 0;
+                        Dash_cd = 9.99;
+                    }
+                }
+                else
+                {
+                    if (moveX > 0)moveX = 4.5;
+                    else if (moveX < 0)moveX = -4.5;
+                    else if (moveY > 0)moveY = 4.5;
+                    else if (moveY < 0)moveY = -4.5;
+                }
+                BgSkill2.setFillColor(sf::Color(170, 170, 170));
+                if (Dash_cd > 0)
+                {
+                    BgSkill2.setFillColor(sf::Color(100, 100, 100));
+                    Dash_cd -= deltaTimered;
+                    //cout << Dash_cd << endl;
+                }
                 x = x + moveX;
                 y = y + moveY;
                 if (map.checkWall(x, y))
@@ -414,51 +585,91 @@ int main()
                     PLAY = false;
                 }
                 score = map.UpdateScore();
-                Show_score(score);
+                
                 //cout << score << endl;
                 if (moveChar == 's')
                 {
-                    playerDown1.setPosition(x, y - 6);
-                    animationDown1.Update(0, deltaTime);
-                    playerDown1.setTextureRect(animationDown1.uvRect);
-                    window.draw(playerDown1);
-                    playerDown2.setPosition(x, y - 6);
-                    animationDown2.Update(0, deltaTime);
-                    playerDown2.setTextureRect(animationDown2.uvRect);
-                    window.draw(playerDown2);
+                    if (Dash)
+                    {
+                        Dash_Effect_S.setPosition(x-18, y - 18);
+                        animationDash_S.Update(0, deltaTime);
+                        Dash_Effect_S.setTextureRect(animationDash_S.uvRect);
+                        window.draw(Dash_Effect_S);
+                    }
+                    else 
+                    {
+                        playerDown1.setPosition(x, y - 6);
+                        animationDown1.Update(0, deltaTime);
+                        playerDown1.setTextureRect(animationDown1.uvRect);
+                        window.draw(playerDown1);
+                        playerDown2.setPosition(x, y - 6);
+                        animationDown2.Update(0, deltaTime);
+                        playerDown2.setTextureRect(animationDown2.uvRect);
+                        window.draw(playerDown2);
+                    }
                 }
                 else if (moveChar == 'a')
                 {
-                    playerLeft1.setPosition(x, y - 6);
-                    animationLeft1.Update(0, deltaTime);
-                    playerLeft1.setTextureRect(animationLeft1.uvRect);
-                    window.draw(playerLeft1);
-                    playerLeft2.setPosition(x, y - 6);
-                    animationLeft2.Update(0, deltaTime);
-                    playerLeft2.setTextureRect(animationLeft2.uvRect);
-                    window.draw(playerLeft2);
+                    if (Dash)
+                    {
+                        Dash_Effect_A.setPosition(x-10, y - 18);
+                        animationDash_A.Update(0, deltaTime);
+                        Dash_Effect_A.setTextureRect(animationDash_A.uvRect);
+                        window.draw(Dash_Effect_A);
+                    }
+                    else
+                    {
+                        playerLeft1.setPosition(x, y - 6);
+                        animationLeft1.Update(0, deltaTime);
+                        playerLeft1.setTextureRect(animationLeft1.uvRect);
+                        window.draw(playerLeft1);
+                        playerLeft2.setPosition(x, y - 6);
+                        animationLeft2.Update(0, deltaTime);
+                        playerLeft2.setTextureRect(animationLeft2.uvRect);
+                        window.draw(playerLeft2);
+                    }
                 }
                 else if (moveChar == 'd')
                 {
-                    playerRight1.setPosition(x, y - 6);
-                    animationRight1.Update(0, deltaTime);
-                    playerRight1.setTextureRect(animationRight1.uvRect);
-                    window.draw(playerRight1);
-                    playerRight2.setPosition(x, y - 6);
-                    animationRight2.Update(0, deltaTime);
-                    playerRight2.setTextureRect(animationRight2.uvRect);
-                    window.draw(playerRight2);
+                    if (Dash)
+                    {
+                        Dash_Effect_D.setPosition(x-20, y - 15);
+                        animationDash_D.Update(0, deltaTime);
+                        Dash_Effect_D.setTextureRect(animationDash_D.uvRect);
+                        window.draw(Dash_Effect_D);
+                    }
+                    else
+                    {
+                        playerRight1.setPosition(x, y - 6);
+                        animationRight1.Update(0, deltaTime);
+                        playerRight1.setTextureRect(animationRight1.uvRect);
+                        window.draw(playerRight1);
+                        playerRight2.setPosition(x, y - 6);
+                        animationRight2.Update(0, deltaTime);
+                        playerRight2.setTextureRect(animationRight2.uvRect);
+                        window.draw(playerRight2);
+                    }
                 }
                 else if (moveChar == 'w')
                 {
-                    playerUp1.setPosition(x, y - 6);
-                    animationUp1.Update(0, deltaTime);
-                    playerUp1.setTextureRect(animationUp1.uvRect);
-                    window.draw(playerUp1);
-                    playerUp2.setPosition(x, y - 6);
-                    animationUp2.Update(0, deltaTime);
-                    playerUp2.setTextureRect(animationUp2.uvRect);
-                    window.draw(playerUp2);
+                    if (Dash)
+                    {
+                        Dash_Effect_W.setPosition(x-18, y - 6);
+                        animationDash_W.Update(0, deltaTime);
+                        Dash_Effect_W.setTextureRect(animationDash_W.uvRect);
+                        window.draw(Dash_Effect_W);
+                    }
+                    else
+                    {
+                        playerUp1.setPosition(x, y - 6);
+                        animationUp1.Update(0, deltaTime);
+                        playerUp1.setTextureRect(animationUp1.uvRect);
+                        window.draw(playerUp1);
+                        playerUp2.setPosition(x, y - 6);
+                        animationUp2.Update(0, deltaTime);
+                        playerUp2.setTextureRect(animationUp2.uvRect);
+                        window.draw(playerUp2);
+                    }
                 }
                 distanceEnemyX = x - RedposX;
                 distanceEnemyY = y - RedposY;
@@ -466,44 +677,399 @@ int main()
                 {
                    if (distanceEnemyY >= 0)
                    {
-                            if (!map.checkWall(RedposX, RedposY + 18)) Redwalk = 's';
-                            else if (!map.checkWall(RedposX, RedposY - 18)) Redwalk = 'w';
-                            else if(map.checkWall(RedposX , RedposY)) Redwalk = 'a';
+                        if (!map.checkWall(RedposX, RedposY + 18)) Redwalk = 's';
+                        else if (!map.checkWall(RedposX, RedposY - 18)) Redwalk = 'w';
+                        else if (map.checkWall(RedposX, RedposY))
+                        {
+                            if (Redwalk == 'd') Redwalk = 'a';
+                            else Redwalk = 'd';
+                        }
                    }
                    else if (distanceEnemyY < 0)
                    {
-                            if(!map.checkWall(RedposX, RedposY - 18)) Redwalk = 'w';
-                            else if (!map.checkWall(RedposX, RedposY + 18)) Redwalk = 's';
-                            else if (map.checkWall(RedposX , RedposY)) Redwalk = 'd';
+                        if(!map.checkWall(RedposX, RedposY - 18)) Redwalk = 'w';
+                        else if (!map.checkWall(RedposX, RedposY + 18)) Redwalk = 's';
+                        else if (map.checkWall(RedposX, RedposY))
+                        {
+                            if (Redwalk == 'd') Redwalk = 'a';
+                            else Redwalk = 'd';
+                        }
                    }
                 }
-                    else if (Redwalk == 'w' || Redwalk == 's')
+                else if (Redwalk == 'w' || Redwalk == 's')
+                {
+                    if (distanceEnemyX >= 0)
                     {
-                        if (distanceEnemyX >= 0)
+                        if(!map.checkWall(RedposX + 18, RedposY)) Redwalk = 'd';
+                        else if (!map.checkWall(RedposX - 18, RedposY)) Redwalk = 'a';
+                    }
+                    else if (distanceEnemyX < 0)
+                    {
+                        if (!map.checkWall(RedposX - 18, RedposY)) Redwalk = 'a';
+                        else if (!map.checkWall(RedposX + 18, RedposY)) Redwalk = 'd';
+                    }
+                }
+
+                distanceEnemyX = x - GreenposX;
+                distanceEnemyY = y - GreenposY;
+                if (Greenwalk == 'a' && int(GreenposX * 10) % 180 == 0 && int(GreenposY * 10) % 180 == 0)
+                {
+                    if (distanceEnemyX > 0)
+                    {
+                        if (distanceEnemyY >= 0)
                         {
-                            if(!map.checkWall(RedposX + 18, RedposY)) Redwalk = 'd';
-                            else if (!map.checkWall(RedposX - 18, RedposY)) Redwalk = 'a';
+                            if (!map.checkWall(GreenposX, GreenposY + 18)) Greenwalk = 's';
+                            else if (!map.checkWall(GreenposX, GreenposY - 18)) Greenwalk = 'w';
+                            //else Greenwalk = 'd';
+                        }
+                        else if (distanceEnemyY < 0)
+                        {
+                            if (!map.checkWall(GreenposX, GreenposY - 18)) Greenwalk = 'w';
+                            else if (!map.checkWall(GreenposX, GreenposY + 18)) Greenwalk = 's';
+                            //else Greenwalk = 'd';
+                        }
+                    }
+                    else
+                    {
+                        if (!map.checkWall(GreenposX-4.5 , GreenposY)) Greenwalk = 'a';
+                        else if (distanceEnemyY >= 0)
+                        {
+                            if (!map.checkWall(GreenposX, GreenposY + 18)) Greenwalk = 's';
+                            else if (!map.checkWall(GreenposX, GreenposY - 18)) Greenwalk = 'w';
+                            else Greenwalk = 'd';
+                        }
+                        else if (distanceEnemyY < 0)
+                        {
+                            if (!map.checkWall(GreenposX, GreenposY - 18)) Greenwalk = 'w';
+                            else if (!map.checkWall(GreenposX, GreenposY + 18)) Greenwalk = 's';
+                            else Greenwalk = 'd';
+                        }
+                    }
+                }
+                else if (Greenwalk == 'd' && int(GreenposX *10)%180 == 0 && int(GreenposY * 10) % 180 == 0)
+                {
+                    if (distanceEnemyX > 0)
+                    {
+                        if (!map.checkWall(GreenposX + 4.0, GreenposY)) Greenwalk = 'd';
+                        else if (distanceEnemyY >= 0)
+                        {
+                            if (!map.checkWall(GreenposX, GreenposY + 18)) Greenwalk = 's';
+                            else if (!map.checkWall(GreenposX, GreenposY - 18)) Greenwalk = 'w';
+                            else Greenwalk = 'a';
+                        }
+                        else if (distanceEnemyY < 0)
+                        {
+                            if (!map.checkWall(GreenposX, GreenposY - 18)) Greenwalk = 'w';
+                            else if (!map.checkWall(GreenposX, GreenposY + 18)) Greenwalk = 's';
+                            else Greenwalk = 'a';
+                        }
+                    }
+                    else
+                    {
+                        if (distanceEnemyY >= 0)
+                        {
+                            if (!map.checkWall(GreenposX, GreenposY + 18.0)) Greenwalk = 's';
+                            else if (!map.checkWall(GreenposX, GreenposY - 18.0)) Greenwalk = 'w';
+                            else if (map.checkWall(GreenposX+18.0, GreenposY)) Greenwalk = 'a';
+                            else Greenwalk = 'd';
+                        }
+                        else if (distanceEnemyY < 0)
+                        {
+                            if (!map.checkWall(GreenposX, GreenposY - 18.0)) Greenwalk = 'w';
+                            else if (!map.checkWall(GreenposX, GreenposY + 18.0)) Greenwalk = 's';
+                            else if (map.checkWall(GreenposX + 18.0, GreenposY)) Greenwalk = 'a';
+                            else Greenwalk = 'd';
+                        }
+                    }
+                }
+                else if (Greenwalk == 's' && int(GreenposX * 10) % 180 == 0 && int(GreenposY * 10) % 180 == 0)
+                {
+                    if (distanceEnemyY > 0)
+                    {
+                        if(!map.checkWall(GreenposX, GreenposY + 18)) Greenwalk = 's';
+                        else if (distanceEnemyX >= 0)
+                        {
+                            if (!map.checkWall(GreenposX+18, GreenposY)) Greenwalk = 'd';
+                            else if (!map.checkWall(GreenposX-18, GreenposY)) Greenwalk = 'a';
+                            //else Greenwalk = 'w';
                         }
                         else if (distanceEnemyX < 0)
                         {
-                            if (!map.checkWall(RedposX - 18, RedposY)) Redwalk = 'a';
-                            else if (!map.checkWall(RedposX + 18, RedposY)) Redwalk = 'd';
+                            if (!map.checkWall(GreenposX-18, GreenposY)) Greenwalk = 'a';
+                            else if (!map.checkWall(GreenposX+18, GreenposY)) Greenwalk = 'd';
+                            //else Greenwalk = 'w';
                         }
                     }
-                distanceEnemyX = x - GreenposX;
-                distanceEnemyY = y - GreenposY;
+                    else
+                    {
+                        if (distanceEnemyX >= 0)
+                        {
+                            if (!map.checkWall(GreenposX + 18, GreenposY)) Greenwalk = 'd';
+                            else if (!map.checkWall(GreenposX - 18, GreenposY)) Greenwalk = 'a';
+                            //else Greenwalk = 's';
+                        }
+                        else if (distanceEnemyX < 0)
+                        {
+                            if (!map.checkWall(GreenposX - 18, GreenposY)) Greenwalk = 'a';
+                            else if (!map.checkWall(GreenposX + 18, GreenposY)) Greenwalk = 'd';
+                            //else Greenwalk = 's';
+                        }
+                    }
+                }
+                else if (Greenwalk == 'w' && int(GreenposX * 10) % 180 == 0 && int(GreenposY * 10) % 180 == 0)
+                {
+                    if (distanceEnemyY < 0)
+                    {
+                        if (!map.checkWall(GreenposX, GreenposY - 18)) Greenwalk = 'w';
+                        else if (distanceEnemyX >= 0)
+                        {
+                            if (!map.checkWall(GreenposX + 18, GreenposY)) Greenwalk = 'd';
+                            else if (!map.checkWall(GreenposX - 18, GreenposY)) Greenwalk = 'a';
+                            //else Greenwalk = 's';
+                        }
+                        else if (distanceEnemyX < 0)
+                        {
+                            if (!map.checkWall(GreenposX - 18, GreenposY)) Greenwalk = 'a';
+                            else if (!map.checkWall(GreenposX + 18, GreenposY)) Greenwalk = 'd';
+                            //else Greenwalk = 's';
+                        }
+                    }
+                    else
+                    {
+                        if (distanceEnemyX >= 0)
+                        {
+                            if (!map.checkWall(GreenposX + 18, GreenposY)) Greenwalk = 'd';
+                            else if (!map.checkWall(GreenposX - 18, GreenposY)) Greenwalk = 'a';
+                            //else Greenwalk = 'w';
+                        }
+                        else if (distanceEnemyX < 0)
+                        {
+                            if (!map.checkWall(GreenposX - 18, GreenposY)) Greenwalk = 'a';
+                            else if (!map.checkWall(GreenposX + 18, GreenposY)) Greenwalk = 'd';
+                            //else Greenwalk = 'w';
+                        }
+                    }
+                }
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                float PinkTargetX=x;
+                float PinkTargetY=y;
+                /*while (!map.checkWall(PinkTargetX, PinkTargetY))
+                {
 
-                    //cout << Redwalk << endl;
-                    map.generatecoin(window, Coin);
+                }*/
+                distanceEnemyX = x - PinkposX;
+                distanceEnemyY = y - PinkposY;
+                if (Pinkwalk == 'a' && int(PinkposX * 10) % 180 == 0 && int(PinkposY * 10) % 180 == 0)
+                {
+                    if (distanceEnemyX > 0)
+                    {
+                        if (distanceEnemyY >= 0)
+                        {
+                            if (!map.checkWall(PinkposX, PinkposY + 18)) Pinkwalk = 's';
+                            else if (!map.checkWall(PinkposX, PinkposY - 18)) Pinkwalk = 'w';
+                            //else Greenwalk = 'd';
+                        }
+                        else if (distanceEnemyY < 0)
+                        {
+                            if (!map.checkWall(PinkposX, PinkposY - 18)) Pinkwalk = 'w';
+                            else if (!map.checkWall(PinkposX, PinkposY + 18)) Pinkwalk = 's';
+                            //else Greenwalk = 'd';
+                        }
+                    }
+                    else
+                    {
+                        if (!map.checkWall(PinkposX - 4.5, PinkposY)) Pinkwalk = 'a';
+                        else if (distanceEnemyY >= 0)
+                        {
+                            if (!map.checkWall(PinkposX, PinkposY + 18)) Pinkwalk = 's';
+                            else if (!map.checkWall(PinkposX, PinkposY - 18)) Pinkwalk = 'w';
+                            else Pinkwalk = 'd';
+                        }
+                        else if (distanceEnemyY < 0)
+                        {
+                            if (!map.checkWall(PinkposX, PinkposY - 18)) Pinkwalk = 'w';
+                            else if (!map.checkWall(PinkposX, PinkposY + 18)) Pinkwalk = 's';
+                            else Pinkwalk = 'd';
+                        }
+                    }
+                }
+                else if (Pinkwalk == 'd' && int(PinkposX * 10) % 180 == 0 && int(PinkposY * 10) % 180 == 0)
+                {
+                    if (distanceEnemyX > 0)
+                    {
+                        if (!map.checkWall(PinkposX + 4.0, PinkposY)) Pinkwalk = 'd';
+                        else if (distanceEnemyY >= 0)
+                        {
+                            if (!map.checkWall(PinkposX, PinkposY + 18)) Pinkwalk = 's';
+                            else if (!map.checkWall(PinkposX, PinkposY - 18)) Pinkwalk = 'w';
+                            else Pinkwalk = 'a';
+                        }
+                        else if (distanceEnemyY < 0)
+                        {
+                            if (!map.checkWall(PinkposX, PinkposY - 18)) Pinkwalk = 'w';
+                            else if (!map.checkWall(PinkposX, PinkposY + 18)) Pinkwalk = 's';
+                            else Pinkwalk = 'a';
+                        }
+                    }
+                    else
+                    {
+                        if (distanceEnemyY >= 0)
+                        {
+                            if (!map.checkWall(PinkposX, PinkposY + 18.0)) Pinkwalk = 's';
+                            else if (!map.checkWall(PinkposX, PinkposY - 18.0)) Pinkwalk = 'w';
+                            else if (map.checkWall(PinkposX + 18.0, PinkposY)) Pinkwalk = 'a';
+                            else Pinkwalk = 'd';
+                        }
+                        else if (distanceEnemyY < 0)
+                        {
+                            if (!map.checkWall(PinkposX, PinkposY - 18.0)) Pinkwalk = 'w';
+                            else if (!map.checkWall(PinkposX, PinkposY + 18.0)) Pinkwalk = 's';
+                            else if (map.checkWall(PinkposX + 18.0, PinkposY)) Pinkwalk = 'a';
+                            else Pinkwalk = 'd';
+                        }
+                    }
+                }
+                else if (Pinkwalk == 's' && int(PinkposX * 10) % 180 == 0 && int(PinkposY * 10) % 180 == 0)
+                {
+                    if (distanceEnemyY > 0)
+                    {
+                        if (!map.checkWall(PinkposX, PinkposY + 18)) Pinkwalk = 's';
+                        else if (distanceEnemyX >= 0)
+                        {
+                            if (!map.checkWall(PinkposX + 18, PinkposY)) Pinkwalk = 'd';
+                            else if (!map.checkWall(PinkposX - 18, PinkposY)) Pinkwalk = 'a';
+                            //else Greenwalk = 'w';
+                        }
+                        else if (distanceEnemyX < 0)
+                        {
+                            if (!map.checkWall(PinkposX - 18, PinkposY)) Pinkwalk = 'a';
+                            else if (!map.checkWall(PinkposX + 18, PinkposY)) Pinkwalk = 'd';
+                            //else Greenwalk = 'w';
+                        }
+                    }
+                    else
+                    {
+                        if (distanceEnemyX >= 0)
+                        {
+                            if (!map.checkWall(PinkposX + 18, PinkposY)) Pinkwalk = 'd';
+                            else if (!map.checkWall(PinkposX - 18, PinkposY)) Pinkwalk = 'a';
+                            //else Greenwalk = 's';
+                        }
+                        else if (distanceEnemyX < 0)
+                        {
+                            if (!map.checkWall(PinkposX - 18, PinkposY)) Pinkwalk = 'a';
+                            else if (!map.checkWall(PinkposX + 18, PinkposY)) Pinkwalk = 'd';
+                            //else Greenwalk = 's';
+                        }
+                    }
+                }
+                else if (Pinkwalk == 'w' && int(PinkposX * 10) % 180 == 0 && int(PinkposY * 10) % 180 == 0)
+                {
+                    if (distanceEnemyY < 0)
+                    {
+                        if (!map.checkWall(PinkposX, PinkposY - 18)) Pinkwalk = 'w';
+                        else if (distanceEnemyX >= 0)
+                        {
+                            if (!map.checkWall(PinkposX + 18, PinkposY)) Pinkwalk = 'd';
+                            else if (!map.checkWall(PinkposX - 18, PinkposY)) Pinkwalk = 'a';
+                            //else Greenwalk = 's';
+                        }
+                        else if (distanceEnemyX < 0)
+                        {
+                            if (!map.checkWall(PinkposX - 18, PinkposY)) Pinkwalk = 'a';
+                            else if (!map.checkWall(PinkposX + 18, PinkposY)) Pinkwalk = 'd';
+                            //else Greenwalk = 's';
+                        }
+                    }
+                    else
+                    {
+                        if (distanceEnemyX >= 0)
+                        {
+                            if (!map.checkWall(PinkposX + 18, PinkposY)) Pinkwalk = 'd';
+                            else if (!map.checkWall(PinkposX - 18, PinkposY)) Pinkwalk = 'a';
+                            //else Greenwalk = 'w';
+                        }
+                        else if (distanceEnemyX < 0)
+                        {
+                            if (!map.checkWall(PinkposX - 18, PinkposY)) Pinkwalk = 'a';
+                            else if (!map.checkWall(PinkposX + 18, PinkposY)) Pinkwalk = 'd';
+                            //else Greenwalk = 'w';
+                        }
+                    }
+                }
+                //cout << Redwalk << endl;
+                map.generatecoin(window, Coin);
+      
+                if (RedDeath)
+                {
+                    RedposX = 18.0f * 14;
+                    RedposY = (18.0f * 11);
+                    Redwalk = 'd';
+                    Red_Death_cd += deltaTimered;
+                    if (Red_Death_cd >= 2.0f)
+                    {
+                        RedDeath = false;
+                        Red_Death_cd = 0;
+                    }
+                }
+                if (RedDeathAnimation)
+                {
+                    DeathRed.setPosition(RedDeathposX -12, RedDeathposY - 12);
+                    animationDeathRed.Update(0, deltaTimered);
+                    DeathRed.setTextureRect(animationDeathRed.uvRect);
+                    window.draw(DeathRed);
+                    RedDeathTime += deltaTimered;
+                    if (RedDeathTime >= 0.8f) RedDeathAnimation = false , RedDeathTime = 0;
+                }
 
-                    GreenDown.setPosition(GreenposX - 3, GreenposY - 9);
-                    animationGreenDown.Update(0, deltaTimered);
-                    GreenDown.setTextureRect(animationGreenDown.uvRect);
-                    window.draw(GreenDown);
+                if (GreenDeath)
+                {
+                    GreenposX = 18.0f * 16;
+                    GreenposY = (18.0f * 11);
+                    Greenwalk = 'd';
+                    Green_Death_cd += deltaTimered;
+                    if (Green_Death_cd >= 2.0f)
+                    {
+                        GreenDeath = false;
+                        Green_Death_cd = 0;
+                    }
+                }
+                if (GreenDeathAnimation)
+                {
+                    DeathGreen.setPosition(GreenDeathposX - 12, GreenDeathposY - 12);
+                    animationDeathGreen.Update(0, deltaTimered);
+                    DeathGreen.setTextureRect(animationDeathGreen.uvRect);
+                    window.draw(DeathGreen);
+                    GreenDeathTime += deltaTimered;
+                    if (GreenDeathTime >= 0.8f) GreenDeathAnimation = false, GreenDeathTime = 0;
+                }
+
+                if (PinkDeath)
+                {
+                    PinkposX = 18.0f * 20;
+                    PinkposY = (18.0f * 11);
+                    Pinkwalk = 'd';
+                    Pink_Death_cd += deltaTimered;
+                    if (Pink_Death_cd >= 2.0f)
+                    {
+                        PinkDeath = false;
+                        Pink_Death_cd = 0;
+                    }
+                }
+                if (PinkDeathAnimation)
+                {
+                    DeathPink.setPosition(PinkDeathposX - 12, PinkDeathposY - 12);
+                    animationDeathPink.Update(0, deltaTimered);
+                    DeathPink.setTextureRect(animationDeathPink.uvRect);
+                    window.draw(DeathPink);
+                    PinkDeathTime += deltaTimered;
+                    if (PinkDeathTime >= 0.8f) PinkDeathAnimation = false, PinkDeathTime = 0;
+                }
+
                 if (Redwalk == 'a')
                 {
                     RedposX -= EnemymoveSpeed;
-                    RedLeft.setPosition(RedposX-3, RedposY - 9);
+                    RedLeft.setPosition(RedposX-3, RedposY - 12);
                     animationRedLeft.Update(0, deltaTimered);
                     RedLeft.setTextureRect(animationRedLeft.uvRect);
                     window.draw(RedLeft);
@@ -511,7 +1077,7 @@ int main()
                 else if (Redwalk == 'd')
                 {
                     RedposX += EnemymoveSpeed;
-                    RedRight.setPosition(RedposX-3, RedposY - 9);
+                    RedRight.setPosition(RedposX-3, RedposY - 12);
                     animationRedRight.Update(0, deltaTimered);
                     RedRight.setTextureRect(animationRedRight.uvRect);
                     window.draw(RedRight);
@@ -519,7 +1085,7 @@ int main()
                 else if (Redwalk == 'w')
                 {
                     RedposY -= EnemymoveSpeed;
-                    RedUp.setPosition(RedposX-3, RedposY - 9);
+                    RedUp.setPosition(RedposX-3, RedposY - 12);
                     animationRedUp.Update(0, deltaTimered);
                     RedUp.setTextureRect(animationRedUp.uvRect);
                     window.draw(RedUp);
@@ -527,21 +1093,142 @@ int main()
                 else if (Redwalk == 's')
                 {
                     RedposY += EnemymoveSpeed;
-                    RedDown.setPosition(RedposX-3, RedposY - 9);
+                    RedDown.setPosition(RedposX-3, RedposY - 12);
                     animationRedDown.Update(0, deltaTimered);
                     RedDown.setTextureRect(animationRedDown.uvRect);
                     window.draw(RedDown);
                 }
+
+                if (Greenwalk == 'a')
+                {
+                    GreenposX -= EnemymoveSpeed;
+                    GreenLeft.setPosition(GreenposX - 3, GreenposY - 12);
+                    animationGreenLeft.Update(0, deltaTimered);
+                    GreenLeft.setTextureRect(animationGreenLeft.uvRect);
+                    window.draw(GreenLeft);
+                }
+                else if (Greenwalk == 'd')
+                {
+                    GreenposX += EnemymoveSpeed;
+                    GreenRight.setPosition(GreenposX - 3, GreenposY - 12);
+                    animationGreenRight.Update(0, deltaTimered);
+                    GreenRight.setTextureRect(animationGreenRight.uvRect);
+                    window.draw(GreenRight);
+                }
+                else if (Greenwalk == 'w')
+                {
+                    GreenposY -= EnemymoveSpeed;
+                    GreenUp.setPosition(GreenposX - 3, GreenposY - 12);
+                    animationGreenUp.Update(0, deltaTimered);
+                    GreenUp.setTextureRect(animationGreenUp.uvRect);
+                    window.draw(GreenUp);
+                }
+                else if (Greenwalk == 's')
+                {
+                    GreenposY += EnemymoveSpeed;
+                    GreenDown.setPosition(GreenposX - 3, GreenposY - 12);
+                    animationGreenDown.Update(0, deltaTimered);
+                    GreenDown.setTextureRect(animationGreenDown.uvRect);
+                    window.draw(GreenDown);
+                }
+
+                if (Pinkwalk == 'a')
+                {
+                    PinkposX -= EnemymoveSpeed;
+                    PinkLeft.setPosition(PinkposX - 3, PinkposY - 12);
+                    animationPinkLeft.Update(0, deltaTimered);
+                    PinkLeft.setTextureRect(animationPinkLeft.uvRect);
+                    window.draw(PinkLeft);
+                }
+                else if (Pinkwalk == 'd')
+                {
+                    PinkposX += EnemymoveSpeed;
+                    PinkRight.setPosition(PinkposX - 3, PinkposY - 12);
+                    animationPinkRight.Update(0, deltaTimered);
+                    PinkRight.setTextureRect(animationPinkRight.uvRect);
+                    window.draw(PinkRight);
+                }
+                else if (Pinkwalk == 'w')
+                {
+                    PinkposY -= EnemymoveSpeed;
+                    PinkUp.setPosition(PinkposX - 3, PinkposY - 12);
+                    animationPinkUp.Update(0, deltaTimered);
+                    PinkUp.setTextureRect(animationPinkUp.uvRect);
+                    window.draw(PinkUp);
+                }
+                else if (Pinkwalk == 's')
+                {
+                    PinkposY += EnemymoveSpeed;
+                    PinkDown.setPosition(PinkposX - 3, PinkposY - 12);
+                    animationPinkDown.Update(0, deltaTimered);
+                    PinkDown.setTextureRect(animationPinkDown.uvRect);
+                    window.draw(PinkDown);
+                }
                 //                                                                                                                         P                                            E
                 // |                   P E                    |                         E P                        |                       E                    |                       P                  |
-                if ((((x + 39.0 >= RedposX) && (x <= RedposX)) || ((RedposX + 36.0 >= x) && (RedposX - 3.0 <= x))) && (((y + 23.0 >= RedposY) && (y <= RedposY)) || ((RedposY + 24.0 >= y) && (RedposY <= y))))
+                if ((((x + 39.0 >= RedposX) && (x -3<= RedposX)) || ((RedposX + 39.0 >= x) && (RedposX  -3<= x))) && (((y + 24.0 >= RedposY) && (y <= RedposY)) || ((RedposY + 24.0 >= y) && (RedposY <= y))))
                 {
-                    PLAY = false;
+                    if (Dash)
+                    {
+                        RedDeath = true; 
+                        RedDeathAnimation = true;
+                        RedDeathposX = RedposX;
+                        RedDeathposY = RedposY;
+                        score += 3000;
+                    }
+                    else PLAY = false;
                 }
+                if ((((x + 39.0 >= GreenposX) && (x - 3 <= GreenposX)) || ((GreenposX + 39.0 >= x) && (GreenposX - 3 <= x))) && (((y + 24.0 >= GreenposY) && (y <= GreenposY)) || ((GreenposY + 24.0 >= y) && (GreenposY <= y))))
+                {
+                    if (Dash)
+                    {
+                        GreenDeath = true;
+                        GreenDeathAnimation = true;
+                        GreenDeathposX = GreenposX;
+                        GreenDeathposY = GreenposY;
+                        score += 3000;
+                    }
+                    else PLAY = false;
+                }
+                if ((((x + 39.0 >= PinkposX) && (x - 3 <= PinkposX)) || ((PinkposX + 39.0 >= x) && (PinkposX - 3 <= x))) && (((y + 24.0 >= PinkposY) && (y <= PinkposY)) || ((PinkposY + 24.0 >= y) && (PinkposY <= y))))
+                {
+                    if (Dash)
+                    {
+                        PinkDeath = true;
+                        PinkDeathAnimation = true;
+                        PinkDeathposX = PinkposX;
+                        PinkDeathposY = PinkposY;
+                        score += 3000;
+                    }
+                    else PLAY = false;
+                }
+
+                if (Hp > 0)
+                {
+                    playerLife1.setPosition(170, 600);
+                    window.draw(playerLife1);
+                    if (Hp > 1)
+                    {
+                        playerLife2.setPosition(215, 600);
+                        window.draw(playerLife2);
+                    }
+                }
+                BgSkill.setPosition(560, 605);
+                window.draw(BgSkill);
+                BgSkill2.setPosition(566, 611);
+                window.draw(BgSkill2);
+                Skill.setPosition(565, 614);
+                window.draw(Skill);
+                Show_Text(score, Dash_cd);
                 map.generate(window);
                 window.setView(view);
                 window.display();
-                Sleep(50);
+                while (waitTime>0)
+                {
+                    waitTime -= deltaTimered;
+                }
+                
+                //Sleep(50);
             }
         }
     }
