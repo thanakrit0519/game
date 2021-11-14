@@ -60,9 +60,10 @@ std::vector <sf::Vector2f> Map::checkCoin(std::vector <sf::Vector2f> Coin,float 
         if ((Coin[i].x < x +24) && (Coin[i].x + 3 > x) && (Coin[i].y < y + 24) && (Coin[i].y + 3 > y))
         {
             Coin.erase(Coin.begin() + i);
-            score += 100;
+            score = 100;
             break;
         }
+        else score = 0;
     }
     return Coin;
 }

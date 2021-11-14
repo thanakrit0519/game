@@ -298,17 +298,19 @@ int main()
     PinkUp.setFillColor(sf::Color(255, 20, 147));
     Animation animationPinkUp(&PinkTextureUp, sf::Vector2u(7, 1), 0.1f);
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
     int Hp = 2;
-    static long long score = 0;
+    long score = 0;
     Map map;
     vector<sf::Vector2f> Coin = map.Loadcoin();
     sf::Clock clock;
+    sf::Clock clock1;
+    sf::Clock clock2;
     while (window.isOpen())
     {
         sf::Event event;
         if (stage == 1)
         {
+            
             while (window.pollEvent(event))
             {
                 sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -417,8 +419,8 @@ int main()
             float EnemymoveSpeed = 4.5f;
             float moveX = 0.0f;
             float moveY = moveSpeed;
-            char moveChar = 's';
-            char nextmoveChar = 's';
+            char moveChar = 'd';
+            char nextmoveChar = 'd';
             
 
             bool Dash = false;
@@ -451,12 +453,16 @@ int main()
             float PinkDeathposX;
             float PinkDeathposY;
             float PinkDeathTime = 0;
+            float PinkTargetX=18.0;
+            float PinkTargetY=18.0;
             
             float distanceEnemyX, distanceEnemyY;
             float Red_Death_cd=0;
             float Green_Death_cd = 0;
             float Pink_Death_cd = 0;
-
+            string Cheet;
+            bool cc = false;
+            
             
             if (!PLAY && Hp > 0)
             {
@@ -464,12 +470,20 @@ int main()
                 Hp--;
                 Sleep(2000);
             }
-            else if(Hp==0)stage = 1;
+            else if (Hp == 0)
+            {
+                Hp = 2;
+                score = 0;
+                Coin = map.Loadcoin();
+                PLAY = true;
+                Sleep(2000);
+            }
             while (PLAY)
             {
                 deltaTime = clock.restart().asSeconds();
-                deltaTimered = deltaTime;
-                float waitTime = 0.1;
+                deltaTimered = clock1.restart().asSeconds();
+                float deltaWaitTime = clock2.restart().asSeconds();
+                float waitTime = 0.04;
                 while (window.pollEvent(event))
                 {
                     if (event.type == sf::Event::TextEntered)
@@ -494,6 +508,13 @@ int main()
                         {
                             Dash = true;
                         }
+                        Cheet += event.text.unicode;
+                        if (Cheet[0] != 'j') Cheet.erase();
+                        if (Cheet == "jai")
+                        {
+                            cc = true;
+                        }
+                        //cout << Cheet << endl;
                     }
                     else if (event.type == sf::Event::Closed)
                     {
@@ -555,7 +576,8 @@ int main()
                     {
                         Dash = false; 
                         Dash_Count = 0;
-                        Dash_cd = 9.99;
+                        if (cc) Dash_cd = 0;
+                        else Dash_cd = 9.99;
                     }
                 }
                 else
@@ -584,7 +606,7 @@ int main()
                 {
                     PLAY = false;
                 }
-                score = map.UpdateScore();
+                score += map.UpdateScore();
                 
                 //cout << score << endl;
                 if (moveChar == 's')
@@ -851,14 +873,22 @@ int main()
                     }
                 }
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                float PinkTargetX=x;
-                float PinkTargetY=y;
-                /*while (!map.checkWall(PinkTargetX, PinkTargetY))
+                if (int(x * 10) % 180 == 0 && int(y * 10) % 180 == 0)
                 {
+                    PinkTargetX = x;
+                    PinkTargetY = y;
+                    while (!map.checkWall(PinkTargetX, PinkTargetY))
+                    {
+                        if (moveChar == 'a') PinkTargetX -= 18;
+                        else if (moveChar == 'd') PinkTargetX += 18;
+                        else if (moveChar == 'w') PinkTargetY -= 18;
+                        else if (moveChar == 's') PinkTargetY += 18;
+                        //cout << "1";
+                    }
+                }
 
-                }*/
-                distanceEnemyX = x - PinkposX;
-                distanceEnemyY = y - PinkposY;
+                distanceEnemyX = PinkTargetX - PinkposX;
+                distanceEnemyY = PinkTargetY - PinkposY;
                 if (Pinkwalk == 'a' && int(PinkposX * 10) % 180 == 0 && int(PinkposY * 10) % 180 == 0)
                 {
                     if (distanceEnemyX > 0)
@@ -1213,6 +1243,7 @@ int main()
                         window.draw(playerLife2);
                     }
                 }
+
                 BgSkill.setPosition(560, 605);
                 window.draw(BgSkill);
                 BgSkill2.setPosition(566, 611);
@@ -1225,7 +1256,9 @@ int main()
                 window.display();
                 while (waitTime>0)
                 {
-                    waitTime -= deltaTimered;
+                    waitTime -= deltaWaitTime;
+                    deltaWaitTime = clock2.restart().asSeconds();
+                    
                 }
                 
                 //Sleep(50);
